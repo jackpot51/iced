@@ -47,6 +47,7 @@ use winit::raw_window_handle::HasWindowHandle;
 
 pub(crate) use window_manager::WindowManager;
 
+use log::trace;
 use rustc_hash::FxHashMap;
 use std::any::Any;
 use std::borrow::Cow;
@@ -55,7 +56,6 @@ use std::mem::ManuallyDrop;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Duration;
-use log::trace;
 
 /// An interactive, native, cross-platform, multi-windowed application.
 ///
@@ -776,7 +776,10 @@ async fn run_instance<'a, P, C>(
 
     let mut platform_specific_handler =
         crate::platform_specific::PlatformSpecific::default();
-    #[cfg(all(feature = "wayland", target_os = "linux"))]
+    #[cfg(all(
+        feature = "wayland",
+        any(target_os = "linux", target_os = "redox")
+    ))]
     if is_wayland {
         platform_specific_handler = platform_specific_handler.with_wayland(
             control_sender.clone(),

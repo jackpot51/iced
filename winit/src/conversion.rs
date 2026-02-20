@@ -105,7 +105,7 @@ pub fn window_attributes(
             );
     }
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "redox"))]
     {
         #[cfg(feature = "x11")]
         {
